@@ -1,0 +1,41 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "logpy"
+version = "0.1.1"
+description = "logpy"
+authors = ["frieda <www778878net@189.cn>"]
+readme = "README.md"
+license = "Apache-2.0"
+homepage = "https://github.com/www778878net/LogPy"
+documentation = "https://github.com/www778878net/LogPy"
+packages = [{include = "logpy", from = "src"}]
+
+[tool.poetry.dependencies]
+python = ">=3.9"
+invoke = "^1.7.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+
+[tool.poetry.scripts]
+build = "tasks:build"
+install = "tasks:install"
+test = "pytest:main"
+all = "tasks:run_all"
+setup = "tasks:setup"
+publish = "tasks:publish"
+
+[tool.poetry.group.dev.dependencies]
+docutils = "^0.21.2"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+#poetry install
+#poetry run setup
+#poetry run all
+#poetry publish --build
+
