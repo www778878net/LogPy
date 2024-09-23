@@ -13,14 +13,32 @@
 // limitations under the License.
 
 using System;
+using Serilog;
+using Serilog.Core;
 
 namespace www778878net.log
 {
-    public class ConsoleLog78:IConsoleLog78
+    public class ConsoleLog78 : IConsoleLog78, IDisposable
     {
-        public void WriteLine(string message)
+        private Logger _logger;
+
+        public ConsoleLog78()
         {
-            Console.WriteLine(message);
+             _logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .CreateLogger();
+             
+        }
+ 
+
+        public void WriteLine(LogEntry logEntry)
+        {
+            _logger.Information(logEntry.ToJson());
+        }
+
+        public void Dispose()
+        {
+            _logger?.Dispose();
         }
     }
 }

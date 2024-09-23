@@ -20,6 +20,6 @@ namespace www778878net.log
 {
     public interface IConsoleLog78
     {
-        void WriteLine(string message);
+        void WriteLine(LogEntry logEntry);
     }
 }

@@ -1,7 +1,17 @@
 from abc import ABC, abstractmethod
+from typing import Optional
 
 class IServerLog78(ABC):
+    @property
     @abstractmethod
-    def log_to_server(self, simple: str, key1: str, leave: int = 0, key2: str = "", key3: str = "", 
-                      content: str = "", key4: str = "", key5: str = "", key6: str = ""):
+    def server_url(self) -> str:
+        pass
+
+    @server_url.setter
+    @abstractmethod
+    def server_url(self, value: str):
+        pass
+
+    @abstractmethod
+    async def log_to_server(self, log_entry: dict) -> Optional[dict]:
         pass
