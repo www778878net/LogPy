@@ -1,4 +1,6 @@
-from invoke import task, run, Program
+from invoke import task, run
+import os
+import sys
 
 @task
 def build(c):
@@ -22,10 +24,13 @@ def publish(c):
 @task
 def run_all(c):
     setup(c)
+    # 设置 PYTHONPATH 环境变量
+    os.environ['PYTHONPATH'] = os.path.abspath(os.path.join(os.path.dirname(__file__), 'src'))
+    print("Python 路径:", os.environ['PYTHONPATH'])
     run("pytest")
     publish(c)
 
 if __name__ == "__main__":
     import sys
-    program = Program()
+    program = Program(namespace=Collection(build, install, setup, publish, run_all))
     sys.exit(program.run())
