@@ -2,50 +2,57 @@ import asyncio
 import aiohttp
 from datetime import datetime
 from typing import Optional
-from .log_entry import LogEntry
+from .log_entry import LogEntry, BasicInfo
 from .log78 import Log78
 
 class LogstashServerLog78:
-    def __init__(self, server_url: str, level_file: int = 50):
+    def __init__(self, server_url: str):
         self.server_url = server_url
-        self.throw_on_error = False
-        self._semaphore = asyncio.Semaphore(10)  # 限制最大并发请求数为10
-        self._logger = Log78()
-        self._logger.setup_level(level_file, level_file, 99999)
+        self._logger = Log78.instance()
 
-    async def log_to_server(self, log_entry: LogEntry) -> Optional[aiohttp.ClientResponse]:
-        async with self._semaphore:
-            try:
-                return await asyncio.wait_for(self._log_to_server_internal(log_entry), timeout=30)
-            except asyncio.TimeoutError:
-                await self._logger.ERROR(LogEntry(basic={"message": "LogToServer operation timed out", "summary": "Logstash Timeout"}))
-                return None
-            except Exception as ex:
-                await self._logger.ERROR(LogEntry(basic={"message": f"Unexpected error in LogToServer: {str(ex)}", "summary": "Logstash Error"}))
-                return None
-
-    async def _log_to_server_internal(self, log_entry: LogEntry) -> Optional[aiohttp.ClientResponse]:
+    async def log_to_server(self, log_entry: LogEntry):
         try:
-            json_content = log_entry.to_json()
-            async with aiohttp.ClientSession() as session:
-                async with session.post(self.server_url, data=json_content, headers={'Content-Type': 'application/json'}, timeout=20) as response:
-                    if response.status < 400:
-                        await self._logger.DEBUG(LogEntry(basic={"message": "Logstash log sent successfully", "summary": "Logstash Success"}))
-                    else:
-                        error_message = f"Failed to send log to Logstash. Status code: {response.status}"
-                        await self._logger.ERROR(LogEntry(basic={"message": error_message, "summary": "Logstash Error"}))
-                        if self.throw_on_error:
-                            raise aiohttp.ClientError(error_message)
-                    return response
-        except asyncio.TimeoutError:
-            await self._logger.ERROR(LogEntry(basic={"message": "HTTP request was canceled or timed out", "summary": "Logstash Canceled"}))
-            return None
+            return await asyncio.wait_for(self._log_to_server_internal(log_entry), timeout=30)
         except Exception as ex:
-            error_message = f"Error sending log to Logstash: {str(ex)}"
-            await self._logger.ERROR(LogEntry(basic={"message": error_message, "summary": "Logstash Exception"}))
-            if self.throw_on_error:
+            error_log_entry = LogEntry()
+            error_log_entry.basic = BasicInfo()
+            error_log_entry.basic.summary = "Logstash Error"
+            error_log_entry.basic.message = f"Unexpected error in LogToServer: {str(ex)}"
+            await self._logger.ERROR(error_log_entry)
+
+    async def _log_to_server_internal(self, log_entry: LogEntry):
+        json_content = log_entry.to_json()
+        async with aiohttp.ClientSession() as session:
+            try:
+                async with session.post(self.server_url, data=json_content, headers={'Content-Type': 'application/json'}, timeout=20) as response:
+                    if response.status == 200:
+                        success_log_entry = LogEntry()
+                        success_log_entry.basic = BasicInfo()
+                        success_log_entry.basic.summary = "Logstash Success"
+                        success_log_entry.basic.message = "Logstash log sent successfully"
+                        await self._logger.DEBUG(success_log_entry)
+                    else:
+                        error_message = f"Logstash server returned status code {response.status}"
+                        error_log_entry = LogEntry()
+                        error_log_entry.basic = BasicInfo()
+                        error_log_entry.basic.summary = "Logstash Error"
+                        error_log_entry.basic.message = error_message
+                        await self._logger.ERROR(error_log_entry)
+                    return response
+            except asyncio.TimeoutError:
+                timeout_log_entry = LogEntry()
+                timeout_log_entry.basic = BasicInfo()
+                timeout_log_entry.basic.summary = "Logstash Canceled"
+                timeout_log_entry.basic.message = "HTTP request was canceled or timed out"
+                await self._logger.ERROR(timeout_log_entry)
+            except Exception as ex:
+                error_message = f"Exception occurred while sending log to Logstash: {str(ex)}"
+                exception_log_entry = LogEntry()
+                exception_log_entry.basic = BasicInfo()
+                exception_log_entry.basic.summary = "Logstash Exception"
+                exception_log_entry.basic.message = error_message
+                await self._logger.ERROR(exception_log_entry)
                 raise
-            return None
 
     async def __aenter__(self):
         return self
