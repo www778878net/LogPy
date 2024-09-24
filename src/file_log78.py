@@ -1,40 +1,35 @@
 import os
-import datetime
-from .ifile_log78 import IFileLog78
+import logging
+from datetime import datetime
+from .log_entry import LogEntry
 
-class FileLog78(IFileLog78):
-    log_path = "/"
+class FileLog78:
+    def __init__(self, filename="7788_.log", menu="logs"):
+        self.menu = menu
+        self.filename = filename
+        self._logger = self._configure_logger()
 
-    def __init__(self, _menu: str = ""):
-        self._menu = _menu
-        self.file = self._get_file_name()
-        self.clear()
+    def _configure_logger(self):
+        log_directory = os.path.join(os.getcwd(), self.menu)
+        os.makedirs(log_directory, exist_ok=True)
+        log_file = os.path.join(log_directory, self.filename)
+        
+        logger = logging.getLogger(__name__)
+        logger.setLevel(logging.INFO)
+        handler = logging.FileHandler(log_file)
+        formatter = logging.Formatter('%(message)s')
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+        return logger
 
-    @property
-    def menu(self) -> str:
-        return self._menu
-
-    @menu.setter
-    def menu(self, value: str):
-        self._menu = value
-
-    def _get_file_name(self) -> str:
-        idate = datetime.datetime.now().day % 3
-        return f"{self._menu}{idate}.txt"
-
-    def log_to_file(self, message: str = ""):
-        try:
-            with open(os.path.join(self.log_path, self.file), "a") as f:
-                f.write(message)
-        except:
-            pass
+    def log_to_file(self, log_entry: LogEntry):
+        self._logger.info(log_entry.to_json())
 
     def clear(self):
-        idate = datetime.datetime.now().day % 3
-        for i in range(3):
-            if i == idate:
-                continue
-            try:
-                os.remove(os.path.join(self.log_path, f"{self._menu}{i}.txt")))
-            except FileNotFoundError:
-                pass
+        # 这个方法在Python版本中不需要实现,因为我们使用的是Python的logging模块
+        pass
+
+    def __del__(self):
+        for handler in self._logger.handlers[:]:
+            self._logger.removeHandler(handler)
+            handler.close()
