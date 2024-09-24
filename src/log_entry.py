@@ -14,26 +14,29 @@ class LogEntry:
 
     def to_json(self) -> str:
         data = {}
-        self._add_properties_to_dict(data, self.basic)
-        self._add_properties_to_dict(data, self.event)
-        self._add_properties_to_dict(data, self.error)
-        self._add_properties_to_dict(data, self.http)
-        self._add_properties_to_dict(data, self.trace)
-        self._add_properties_to_dict(data, self.additional_properties)
+        self._add_properties_to_dict(data, self)
+        # 移除空的 additional_properties
+        if 'additional_properties' in data and not data['additional_properties']:
+            del data['additional_properties']
         return json.dumps(data)
 
     def _add_properties_to_dict(self, data: Dict[str, Any], obj: Any):
-        if obj is None:
-            return
-
         if isinstance(obj, dict):
             for key, value in obj.items():
-                if value is not None and str(value).strip():
-                    data[key.lower()] = value
-        else:
+                self._add_value_to_dict(data, key, value)
+        elif hasattr(obj, '__dict__'):
             for key, value in obj.__dict__.items():
-                if value is not None and str(value).strip():
-                    data[key.lower()] = value
+                if not key.startswith('_'):
+                    self._add_value_to_dict(data, key, value)
+
+    def _add_value_to_dict(self, data: Dict[str, Any], key: str, value: Any):
+        if value is not None and str(value).strip():
+            if isinstance(value, (BasicInfo, EventInfo, ErrorInfo, HttpInfo, TraceInfo)):
+                self._add_properties_to_dict(data, value)
+            elif isinstance(value, datetime):
+                data[key.lower()] = value.isoformat()
+            else:
+                data[key.lower()] = value
 
     def add_property(self, key: str, value: Any):
         self.additional_properties[key] = value
