@@ -14,35 +14,29 @@ class LogEntry:
 
     def to_json(self) -> str:
         data = {}
-        self._add_properties_to_dict(data)
+        self._add_properties_to_dict(data, self.basic)
+        self._add_properties_to_dict(data, self.event)
+        self._add_properties_to_dict(data, self.error)
+        self._add_properties_to_dict(data, self.http)
+        self._add_properties_to_dict(data, self.trace)
+        self._add_properties_to_dict(data, self.additional_properties)
         return json.dumps(data)
 
-    def _add_properties_to_dict(self, data: Dict[str, Any]):
-        self._add_complex_type_to_dict(data, self.basic)
-        self._add_complex_type_to_dict(data, self.event)
-        self._add_complex_type_to_dict(data, self.error)
-        self._add_complex_type_to_dict(data, self.http)
-        self._add_complex_type_to_dict(data, self.trace)
-
-        for key, value in self.__dict__.items():
-            if key not in ['basic', 'event', 'error', 'http', 'trace', 'additional_properties']:
-                if value is not None and str(value).strip():
-                    data[key.lower()] = value
-
-        for key, value in self.additional_properties.items():
-            if value is not None and str(value).strip():
-                data[key.lower()] = value
-
-    def add_property(self, key: str, value: Any):
-        self.additional_properties[key] = value
-
-    def _add_complex_type_to_dict(self, data: Dict[str, Any], obj: Any):
+    def _add_properties_to_dict(self, data: Dict[str, Any], obj: Any):
         if obj is None:
             return
 
-        for key, value in obj.__dict__.items():
-            if value is not None and str(value).strip():
-                data[key.lower()] = value
+        if isinstance(obj, dict):
+            for key, value in obj.items():
+                if value is not None and str(value).strip():
+                    data[key.lower()] = value
+        else:
+            for key, value in obj.__dict__.items():
+                if value is not None and str(value).strip():
+                    data[key.lower()] = value
+
+    def add_property(self, key: str, value: Any):
+        self.additional_properties[key] = value
 
 class BasicInfo:
     def __init__(self):
