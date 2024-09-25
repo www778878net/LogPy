@@ -2,6 +2,9 @@ import re
 import subprocess
 from pathlib import Path
 
+def get_current_branch():
+    return subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode('utf-8').strip()
+
 def increment_patch_version():
     pyproject_path = Path("pyproject.toml")
     content = pyproject_path.read_text()
@@ -31,6 +34,15 @@ def run_command(command):
     return stdout.decode()
 
 def main():
+    current_branch = get_current_branch()
+    if current_branch != 'main':
+        print(f"Current branch is {current_branch}. Release process can only be run on main branch.")
+        exit(1)
+
+    # 运行测试
+    print("Running tests...")
+    run_command("pytest")
+
     # 增加补丁版本号
     increment_patch_version()
 
@@ -41,6 +53,12 @@ def main():
     # 发布项目
     print("Publishing project...")
     run_command("poetry publish")
+
+    # 提交版本更新并推送到远程仓库
+    print("Committing version update and pushing to remote...")
+    run_command("git add pyproject.toml")
+    run_command('git commit -m "Bump version"')
+    run_command("git push origin main")
 
     print("Release process completed successfully.")
 
