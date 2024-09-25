@@ -24,29 +24,11 @@ echo "操作人: $operator"
 
 cd "$work_dir"
 
+# 激活虚拟环境
+source .venv/Scripts/activate
+
 if [ "$current_branch" = "develop" ]; then
-    echo "当前分支是 develop。运行 pre-commit 检查... (执行 ID: $EXECUTION_ID)"
-
-    echo "运行 TypeScript 编译... (执行 ID: $EXECUTION_ID)"
-    # 获取改变的 TypeScript 文件
-    changed_files=$(git diff --name-only --cached | grep '\.ts$')
-    
-    if [ -n "$changed_files" ]; then
-        # 只编译改变的文件
-        npx tsc $changed_files
-        if [ $? -ne 0 ]; then
-            echo "TypeScript 编译失败，提交已中止 (执行 ID: $EXECUTION_ID)"
-            exit 1
-        fi
-    else
-        echo "没有 TypeScript 文件改变，跳过编译 (执行 ID: $EXECUTION_ID)"
-    fi
-
-    echo "TypeScript 编译成功 (执行 ID: $EXECUTION_ID)"
-
-    echo "将生成的文件添加到 Git 暂存区... (执行 ID: $EXECUTION_ID)"
-    git add .
-    echo "文件已添加到暂存区 (执行 ID: $EXECUTION_ID)"
+    echo "当前分支是 develop。运行 pre-push 检查... (执行 ID: $EXECUTION_ID)" 
 
     echo "切换到 main 分支并更新... (执行 ID: $EXECUTION_ID)"
     git checkout main
@@ -66,7 +48,7 @@ if [ "$current_branch" = "develop" ]; then
 elif [ "$current_branch" = "main" ]; then
     echo "当前分支是 main。运行... (执行 ID: $EXECUTION_ID)"
     echo "运行测试... (执行 ID: $EXECUTION_ID)"
-    npm test
+    pytest
     if [ $? -ne 0 ]; then
         echo "测试失败，推送已中止 (执行 ID: $EXECUTION_ID)"
         exit 1
@@ -83,7 +65,7 @@ elif [ "$current_branch" = "main" ]; then
     echo "切换到 develop 分支并合并 main 成功完成 (执行 ID: $EXECUTION_ID)"
 
 else
-    echo "当前分支是 $current_branch。跳过 npm run main 和 npm run dev。 (执行 ID: $EXECUTION_ID)"
+    echo "当前分支是 $current_branch。跳过 pytest 和 mypy 检查。 (执行 ID: $EXECUTION_ID)"
 fi
 
 echo "Pre-push 钩子执行完成 (执行 ID: $EXECUTION_ID)"
