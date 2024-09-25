@@ -20,9 +20,10 @@ def increment_patch_version():
         new_content = re.sub(version_pattern, f'version = "{new_version}"', content)
         pyproject_path.write_text(new_content, encoding='utf-8')
         print(f"版本从 {current_version} 更新到 {new_version}")
+        return new_version
     else:
         print("在 pyproject.toml 中未找到版本信息")
-        return
+        return None
 
 def run_command(command):
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -72,7 +73,10 @@ def main():
     run_command("pytest")
 
     # 增加补丁版本号
-    increment_patch_version()
+    new_version = increment_patch_version()
+    if not new_version:
+        print("版本更新失败，终止发布过程。")
+        exit(1)
 
     # 构建项目
     print("正在构建项目...")
@@ -85,7 +89,7 @@ def main():
     # 提交版本更新并推送到远程仓库
     print("正在提交版本更新并推送到远程仓库...")
     run_command("git add .")
-    run_command('git commit -m "Bump version"')
+    run_command(f'git commit -m "Bump version to {new_version}"')
     # try:
     #     run_command("git push origin main")
     #     print("成功推送到远程仓库")
@@ -94,7 +98,7 @@ def main():
     #     print("请检查您的 Git 配置和仓库访问权限")
     #     exit(1)
 
-    print("发布过程成功完成。")
+    print(f"发布过程成功完成。新版本: {new_version}")
 
 if __name__ == "__main__":
     main()
