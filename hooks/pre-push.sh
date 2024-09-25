@@ -38,6 +38,8 @@ if [ "$current_branch" = "main" ]; then
     echo "测试通过成功 (执行 ID: $EXECUTION_ID)"  
  
 
+ 
+
 else
     echo "当前分支是 $current_branch。跳过 pytest 和 mypy 检查。 (执行 ID: $EXECUTION_ID)"
 fi
