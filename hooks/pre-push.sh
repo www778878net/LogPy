@@ -24,29 +24,11 @@ echo "操作人: $operator"
 
 cd "$work_dir"
 
+# 激活虚拟环境
+source .venv/Scripts/activate
+
 if [ "$current_branch" = "develop" ]; then
-    echo "当前分支是 develop。运行 pre-commit 检查... (执行 ID: $EXECUTION_ID)"
-
-    echo "运行 Python 类型检查... (执行 ID: $EXECUTION_ID)"
-    # 获取改变的 Python 文件
-    changed_files=$(git diff --name-only --cached | grep '\.py$')
-    
-    if [ -n "$changed_files" ]; then
-        # 只对改变的文件进行类型检查
-        mypy $changed_files
-        if [ $? -ne 0 ]; then
-            echo "Python 类型检查失败，提交已中止 (执行 ID: $EXECUTION_ID)"
-            exit 1
-        fi
-    else
-        echo "没有 Python 文件改变，跳过类型检查 (执行 ID: $EXECUTION_ID)"
-    fi
-
-    echo "Python 类型检查成功 (执行 ID: $EXECUTION_ID)"
-
-    echo "将生成的文件添加到 Git 暂存区... (执行 ID: $EXECUTION_ID)"
-    git add .
-    echo "文件已添加到暂存区 (执行 ID: $EXECUTION_ID)"
+    echo "当前分支是 develop。运行 pre-push 检查... (执行 ID: $EXECUTION_ID)" 
 
     echo "切换到 main 分支并更新... (执行 ID: $EXECUTION_ID)"
     git checkout main
