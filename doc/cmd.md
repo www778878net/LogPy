@@ -1,4 +1,8 @@
-# UpinfoPy 项目命令
+# init
+python -m venv .venv
+.venv\Scripts\activate
+pip install poetry
+poetry install
 
 ## 安装和设置
 

@@ -1,6 +1,6 @@
 import unittest
-from src.log78 import Log78, Environment
-from src.log_entry import LogEntry, BasicInfo
+from log78 import Log78, Environment
+from log78.log_entry import LogEntry, BasicInfo
 
 class TestLog78(unittest.IsolatedAsyncioTestCase):
     def setUp(self):

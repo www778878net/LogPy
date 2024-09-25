@@ -1,5 +1,5 @@
 import unittest
-from src.log_entry import LogEntry, BasicInfo
+from log78.log_entry import LogEntry, BasicInfo
 
 class TestLogEntry(unittest.TestCase):
     def test_log_entry_creation(self):

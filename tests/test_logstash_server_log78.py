@@ -1,7 +1,7 @@
 import unittest
 import asyncio
-from src.logstash_server_log78 import LogstashServerLog78
-from src.log_entry import LogEntry, BasicInfo
+from log78.logstash_server_log78 import LogstashServerLog78
+from log78.log_entry import LogEntry, BasicInfo
 from unittest.mock import patch, MagicMock
 
 class TestLogstashServerLog78(unittest.IsolatedAsyncioTestCase):
