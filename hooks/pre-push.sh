@@ -17,7 +17,7 @@ operator=$(git config user.name)
 
 # 打印获取到的信息
 echo "Pre-push 钩子开始执行 (执行 ID: $EXECUTION_ID)"
-echo "工作目录: $work_dir"
+echo "工作目录 : $work_dir"
 echo "远程仓库: $remote_repo"
 echo "当前分支: $current_branch"
 echo "操作人: $operator"
