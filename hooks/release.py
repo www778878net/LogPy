@@ -84,15 +84,15 @@ def main():
 
     # 提交版本更新并推送到远程仓库
     print("正在提交版本更新并推送到远程仓库...")
-    run_command("git add pyproject.toml")
+    run_command("git add .")
     run_command('git commit -m "Bump version"')
-    try:
-        run_command("git push origin main")
-        print("成功推送到远程仓库")
-    except Exception as e:
-        print(f"推送到远程仓库失败: {e}")
-        print("请检查您的 Git 配置和仓库访问权限")
-        exit(1)
+    # try:
+    #     run_command("git push origin main")
+    #     print("成功推送到远程仓库")
+    # except Exception as e:
+    #     print(f"推送到远程仓库失败: {e}")
+    #     print("请检查您的 Git 配置和仓库访问权限")
+    #     exit(1)
 
     print("发布过程成功完成。")
 
