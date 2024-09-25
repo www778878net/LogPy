@@ -64,8 +64,11 @@ elif [ "$current_branch" = "main" ]; then
     fi
     echo "切换到 develop 分支并合并 main 成功完成 (执行 ID: $EXECUTION_ID)"
 
+ 
+
 else
     echo "当前分支是 $current_branch。跳过 pytest 和 mypy 检查。 (执行 ID: $EXECUTION_ID)"
 fi
 
-echo "Pre-push 钩子执行完成 (执行 ID: $EXECUTION_ID)"
+echo "Pre-push 钩子执行成功 (执行 ID: $EXECUTION_ID)"
+exit 0
