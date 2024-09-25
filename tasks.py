@@ -18,8 +18,8 @@ def setup(c):
 
 @task
 def publish(c):
-    build(c)
-    run("twine upload --repository pypi dist/*")
+    c.run("poetry build")
+    c.run("poetry publish")
 
 @task
 def run_all(c):

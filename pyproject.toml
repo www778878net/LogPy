@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "log78"
-version = "0.1.0"
+version = "0.1.1"
 description = "A flexible Python logging library supporting console, file, and server logging."
 authors = ["Frieda.Hu <www778878net@189.cn>"]
 license = "Apache-2.0"
@@ -20,15 +20,16 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.9"
 aiofiles = "^0.6.0"
 aiohttp = "^3.7.4"
 
 [tool.poetry.dev-dependencies]
-pytest = "^6.2.5"
+pytest = "^7.0.0"  # 更新到最新的主要版本
 pytest-asyncio = "^0.18.3"
 black = "^22.3.0"
 docutils = "^0.21.2"
+invoke = "^1.7.0"  # 添加 invoke 依赖
 
 [tool.poetry.scripts]
 build = "tasks:build"
@@ -46,4 +47,9 @@ asyncio_mode = "auto"
 where = ["src"]
 include = ["log78*"]
 exclude = ["tests*"]
+
+[[tool.poetry.source]]
+name = "aliyun"
+url = "https://mirrors.aliyun.com/pypi/simple/"
+priority = "primary"
 
