@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# 生成唯一的执行 ID
+EXECUTION_ID=$(date +%s%N)
+
 # 获取当前工作目录
 work_dir=$(git rev-parse --show-toplevel)
 
@@ -13,35 +16,59 @@ current_branch=$(git symbolic-ref --short HEAD)
 operator=$(git config user.name)
 
 # 打印获取到的信息
-echo "Post-push 钩子开始执行"
-echo "工作目录: $work_dir"
+echo "Pre-push 钩子开始执行 (执行 ID: $EXECUTION_ID)"
+echo "工作目录 : $work_dir"
 echo "远程仓库: $remote_repo"
 echo "当前分支: $current_branch"
 echo "操作人: $operator"
 
 cd "$work_dir"
 
-# 如果当前分支是 main，则切换回 develop 分支
-if [ "$current_branch" = "main" ]; then
-    echo "当前分支是 main。切换回 develop 分支..."
-    git checkout develop
-    if [ $? -ne 0 ]; then
-        echo "切换回 develop 分支失败"
-        exit 1
-    fi
-    echo "成功切换回 develop 分支"
-# 如果当前分支是 develop，则切换到 main 分支
-elif [ "$current_branch" = "develop" ]; then
-    echo "当前分支是 develop。切换到 main 分支..."
+# 激活虚拟环境
+source .venv/Scripts/activate
+
+if [ "$current_branch" = "develop" ]; then
+    echo "当前分支是 develop。运行 pre-push 检查... (执行 ID: $EXECUTION_ID)" 
+
+    echo "切换到 main 分支并更新... (执行 ID: $EXECUTION_ID)"
     git checkout main
+    #git pull origin main
+
+    echo "获取 develop 分支最后一次提交信息... (执行 ID: $EXECUTION_ID)"
+    last_commit_msg=$(git log develop -1 --pretty=%B)
+
+    echo "合并 develop 分支，使用 --squash 选项... (执行 ID: $EXECUTION_ID)"
+    git merge --squash develop
+
+    echo "提交更改... (执行 ID: $EXECUTION_ID)"
+    git commit -m "$last_commit_msg"
+
+    echo "合并到 main 成功完成 (执行 ID: $EXECUTION_ID)"
+
+elif [ "$current_branch" = "main" ]; then
+    echo "当前分支是 main。运行... (执行 ID: $EXECUTION_ID)"
+    echo "运行测试... (执行 ID: $EXECUTION_ID)"
+    pytest
     if [ $? -ne 0 ]; then
-        echo "切换到 main 分支失败"
+        echo "测试失败，推送已中止 (执行 ID: $EXECUTION_ID)"
         exit 1
     fi
-    echo "成功切换到 main 分支"
+    echo "测试通过成功 (执行 ID: $EXECUTION_ID)"
+
+    echo "切换到 develop 分支并合并 main... (执行 ID: $EXECUTION_ID)"
+    git checkout develop 
+    git merge main
+    if [ $? -ne 0 ]; then
+        echo "切换到 develop 分支并合并 main 失败，推送已中止 (执行 ID: $EXECUTION_ID)"
+        exit 1
+    fi
+    echo "切换到 develop 分支并合并 main 成功完成 (执行 ID: $EXECUTION_ID)"
+
+ 
+
+else
+    echo "当前分支是 $current_branch。跳过 pytest 和 mypy 检查。 (执行 ID: $EXECUTION_ID)"
 fi
 
-# 在这里可以添加其他需要在 push 后执行的操作
-# 例如：发送通知、更新文档、触发构建等
-
-echo "Post-push 钩子执行完成"
+echo "Pre-push 钩子执行成功 (执行 ID: $EXECUTION_ID)"
+exit 0
