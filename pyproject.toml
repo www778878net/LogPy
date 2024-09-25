@@ -1,22 +1,33 @@
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "log78"
-version = "0.1.1"
-description = "A flexible logging library for Python"
-authors = ["Your Name <your.email@example.com>"]
-license = "MIT"
+version = "0.1.0"
+description = "A flexible Python logging library supporting console, file, and server logging."
+authors = ["Frieda.Hu <www778878net@189.cn>"]
+license = "Apache-2.0"
 readme = "README.md"
-packages = [{include = "log78", from = "src"}]
+homepage = "https://github.com/www778878net/Log78"
+repository = "https://github.com/www778878net/Log78.git"
+documentation = "https://github.com/www778878net/Log78"
+keywords = ["logging", "debug", "development"]
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-aiohttp = "^3.8.0"
+aiofiles = "^0.6.0"
+aiohttp = "^3.7.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
+pytest-asyncio = "^0.18.3"
+black = "^22.3.0"
 docutils = "^0.21.2"
 
 [tool.poetry.scripts]
@@ -28,10 +39,10 @@ setup = "tasks:setup"
 publish = "tasks:publish"
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+asyncio_mode = "auto"
 
-#poetry install
-#poetry run setup
-#poetry run all
-#poetry publish --build
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["log78*"]
+exclude = ["tests*"]
 
