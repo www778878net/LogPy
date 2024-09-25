@@ -7,5 +7,5 @@
 - 工作方法是搞定一个小修改,添加测试,我会把detail.log带进来,你查看日志修改并添加需求更多的日志,ok后继续
 - 调试时出错把关键日志截取有用信息发给我 不要发整条
 
-# D:\50.code\35.git78py\LogPy\src\log_entry.py
+# D:\50.code\35.git78py\log78\src\log_entry.py
 - tojson 要求全部到顶层 小写KEY 空字符 NONE都不要
