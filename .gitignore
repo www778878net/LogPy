@@ -143,4 +143,5 @@ dmypy.json
 ehthumbs.db
 Thumbs.db
 
+poetry.lock
 logs/
