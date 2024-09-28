@@ -1,35 +1,36 @@
 import os
-import logging
-from datetime import datetime
+from loguru import logger
 from .log_entry import LogEntry
 
 class FileLog78:
-    def __init__(self, filename="7788_.log", menu="logs"):
+    def __init__(self, filename="7788_{time:YYYY-MM-DD_HH}.log", menu="logs"):
         self.menu = menu
         self.filename = filename
-        self._logger = self._configure_logger()
+        self._configure_logger()
 
     def _configure_logger(self):
         log_directory = os.path.join(os.getcwd(), self.menu)
         os.makedirs(log_directory, exist_ok=True)
         log_file = os.path.join(log_directory, self.filename)
         
-        logger = logging.getLogger(__name__)
-        logger.setLevel(logging.INFO)
-        handler = logging.FileHandler(log_file)
-        formatter = logging.Formatter('%(message)s')
-        handler.setFormatter(formatter)
-        logger.addHandler(handler)
-        return logger
+        logger.remove()  # 移除默认的处理器
+        logger.add(
+            log_file,
+            rotation="1h",  # 每小时轮换一次
+            retention="1 week",  # 保留一周的日志
+            compression="zip",  # 压缩旧日志
+            format="{message}",  # 只记录消息内容
+            encoding="utf-8",  # 指定编码为 UTF-8
+            serialize=True  # 序列化日志记录
+        )
 
     def log_to_file(self, log_entry: LogEntry):
-        self._logger.info(log_entry.to_json())
+        logger.info(log_entry.to_json())
 
     def clear(self):
-        # 这个方法在Python版本中不需要实现,因为我们使用的是Python的logging模块
+        # 使用 loguru 时，这个方法可能不需要实现
         pass
 
     def __del__(self):
-        for handler in self._logger.handlers[:]:
-            self._logger.removeHandler(handler)
-            handler.close()
+        # loguru 会自动处理文件关闭，所以这里不需要特别的清理代码
+        pass

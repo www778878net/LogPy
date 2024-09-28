@@ -3,43 +3,43 @@ from typing import Optional, Union
 
 class ILog78(ABC):
     @abstractmethod
-    async def detail(self, summary: str, message: Optional[Union[str, dict]] = None, level: int = 10):
+    async def DETAIL(self, summary: str, message: Optional[Union[str, dict]] = None, level: int = 10):
         pass
 
     @abstractmethod
-    async def debug(self, summary: str, message: Optional[Union[str, dict]] = None, level: int = 20):
+    async def DEBUG(self, summary: str, message: Optional[Union[str, dict]] = None, level: int = 20):
         pass
 
     @abstractmethod
-    async def info(self, summary: str, message: Optional[Union[str, dict]] = None, level: int = 30):
+    async def INFO(self, summary: str, message: Optional[Union[str, dict]] = None, level: int = 30):
         pass
 
     @abstractmethod
-    async def warn(self, summary: str, message: Optional[Union[str, dict]] = None, level: int = 50):
+    async def WARN(self, summary: str, message: Optional[Union[str, dict]] = None, level: int = 50):
         pass
 
     @abstractmethod
-    async def error(self, summary: str, message: Optional[Union[str, dict]] = None, level: int = 60):
+    async def ERROR(self, summary: str, message: Optional[Union[str, dict]] = None, level: int = 60):
         pass
 
     @abstractmethod
-    async def error(self, error: Exception, summary: Optional[str] = None, level: int = 60):
+    async def ERROR(self, error: Exception, summary: Optional[str] = None, level: int = 60):
         pass
 
     @abstractmethod
-    async def error(self, log_entry: dict, level: int = 60):
+    async def ERROR(self, log_entry: dict, level: int = 60):
         pass
 
     @abstractmethod
-    async def debug(self, log_entry: dict, level: int = 20):
+    async def DEBUG(self, log_entry: dict, level: int = 20):
         pass
 
     @abstractmethod
-    async def info(self, log_entry: dict, level: int = 30):
+    async def INFO(self, log_entry: dict, level: int = 30):
         pass
 
     @abstractmethod
-    async def warn(self, log_entry: dict, level: int = 50):
+    async def WARN(self, log_entry: dict, level: int = 50):
         pass
 
     @abstractmethod

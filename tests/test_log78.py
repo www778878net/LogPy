@@ -48,21 +48,21 @@ async def test_info_with_text_only():
     logger = Log78.instance()
     
     # 打印当前环境和日志级别
-    print(f"Current environment: {logger.current_environment}")
+    print(f"当前环境: {logger.current_environment}")
     file_level, console_level, api_level = logger.get_current_levels()
-    print(f"Current log levels - File: {file_level}, Console: {console_level}, API: {api_level}")
+    print(f"当前日志级别 - 文件: {file_level}, 控制台: {console_level}, API: {api_level}")
 
     # 确保我们在开发模式下
     logger.set_environment(Environment.Development)
-    print(f"Environment set to: {logger.current_environment}")
+    print(f"环境设置为: {logger.current_environment}")
     file_level, console_level, api_level = logger.get_current_levels()
-    print(f"Updated log levels - File: {file_level}, Console: {console_level}, API: {api_level}")
+    print(f"更新后的日志级别 - 文件: {file_level}, 控制台: {console_level}, API: {api_level}")
 
     # 使用 MagicMock 来模拟 ConsoleLog78
     mock_console_logger = MagicMock()
     logger.console_logger = mock_console_logger
 
-    test_message = "This is a test info message"
+    test_message = "这是一条测试信息日志"
     await logger.INFO(test_message)
 
     # 验证是否调用了 console_logger 的 write_line 方法
@@ -81,8 +81,8 @@ async def test_info_with_text_only():
         pytest.fail("write_line was not called with any arguments")
 
     # 打印调试信息
-    print(f"Console logger mock calls: {mock_console_logger.mock_calls}")
-    print(f"Write line mock calls: {mock_console_logger.write_line.mock_calls}")
+    print(f"控制台日志记录器模拟调用: {mock_console_logger.mock_calls}")
+    print(f"write_line 模拟调用: {mock_console_logger.write_line.mock_calls}")
 
 if __name__ == '__main__':
     unittest.main()
