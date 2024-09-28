@@ -1,7 +1,7 @@
 import asyncio
 import os
 from enum import Enum
-from typing import Optional, Dict, Any, Tuple
+from typing import Optional, Dict, Any, Tuple, Union
 from datetime import datetime
 from .log_entry import LogEntry, BasicInfo, ErrorInfo
 from .iserver_log78 import IServerLog78
@@ -10,6 +10,7 @@ from .ifile_log78 import IFileLog78
 from .console_log78 import ConsoleLog78
 from .file_log78 import FileLog78
 from .file_log_detail import FileLogDetail
+import traceback
 
 class Environment(Enum):
     Production = 0
@@ -118,7 +119,7 @@ class Log78:
 
             if is_debug or log_entry.basic.log_level_number >= self.level_console:
                 if self.console_logger:
-                    self.console_logger.write_line(log_entry)
+                    self.console_logger.write_line(log_entry)  # 确保这行代码存在并且没有被注释掉
 
     def is_debug_key(self, log_entry: LogEntry) -> bool:
         if self.debug_entry and self.debug_entry.basic:
@@ -143,55 +144,91 @@ class Log78:
 
         return any(key and key.lower() in self.debug_kind for key in keys_to_check if key)
 
-    async def DETAIL(self, summary: str, message: Any = None, level: int = 10):
-        await self.DETAIL(LogEntry(basic=BasicInfo(summary=summary, message=message, log_level_number=level)))
+    async def DETAIL(self, summary_or_log_entry: Union[str, LogEntry], message: Any = None, level: int = 10):
+        if isinstance(summary_or_log_entry, LogEntry):
+            log_entry = summary_or_log_entry
+            log_entry.basic.log_level = "DETAIL"
+            log_entry.basic.log_level_number = level
+        else:
+            log_entry = LogEntry(basic=BasicInfo(
+                summary=summary_or_log_entry,
+                message=message,
+                log_level="DETAIL",
+                log_level_number=level
+            ))
+        await self.process_log_internal(log_entry)
 
-    async def DEBUG(self, summary: str, message: Any = None, level: int = 20):
-        await self.DEBUG(LogEntry(basic=BasicInfo(summary=summary, message=message, log_level_number=level)))
+    async def DEBUG(self, summary_or_log_entry: Union[str, LogEntry], message: Any = None, level: int = 20):
+        if isinstance(summary_or_log_entry, LogEntry):
+            log_entry = summary_or_log_entry
+            log_entry.basic.log_level = "DEBUG"
+            log_entry.basic.log_level_number = level
+        else:
+            log_entry = LogEntry(basic=BasicInfo(
+                summary=summary_or_log_entry,
+                message=message,
+                log_level="DEBUG",
+                log_level_number=level
+            ))
+        await self.process_log_internal(log_entry)
 
-    async def INFO(self, summary: str, message: Any = None, level: int = 30):
-        await self.INFO(LogEntry(basic=BasicInfo(summary=summary, message=message, log_level_number=level)))
+    async def INFO(self, summary_or_log_entry: Union[str, LogEntry], message: Any = None, level: int = 30):
+        print("INFO method called")  # 调试输出
+        if isinstance(summary_or_log_entry, LogEntry):
+            log_entry = summary_or_log_entry
+            log_entry.basic.log_level = "INFO"
+            log_entry.basic.log_level_number = level
+        else:
+            log_entry = LogEntry(basic=BasicInfo(
+                summary=summary_or_log_entry,
+                message=message,
+                log_level="INFO",
+                log_level_number=level
+            ))
+        print(f"Log entry created: {log_entry.to_json()}")  # 调试输出
+        await self.process_log_internal(log_entry)
+        print("process_log_internal completed")  # 调试输出
 
-    async def WARN(self, summary: str, message: Any = None, level: int = 50):
-        await self.WARN(LogEntry(basic=BasicInfo(summary=summary, message=message, log_level_number=level)))
+    async def WARN(self, summary_or_log_entry: Union[str, LogEntry], message: Any = None, level: int = 50):
+        if isinstance(summary_or_log_entry, LogEntry):
+            log_entry = summary_or_log_entry
+            log_entry.basic.log_level = "WARN"
+            log_entry.basic.log_level_number = level
+        else:
+            log_entry = LogEntry(basic=BasicInfo(
+                summary=summary_or_log_entry,
+                message=message,
+                log_level="WARN",
+                log_level_number=level
+            ))
+        await self.process_log_internal(log_entry)
 
-    async def ERROR(self, summary: str, message: Any = None, level: int = 60):
-        await self.ERROR(LogEntry(basic=BasicInfo(summary=summary, message=message, log_level_number=level)))
-
-    async def ERROR(self, error: Exception, summary: Optional[str] = None, level: int = 60):
-        log_entry = LogEntry(
-            basic=BasicInfo(summary=summary or str(error), log_level_number=level),
-            error=ErrorInfo(
-                error_type=type(error).__name__,
-                error_message=str(error),
-                error_stack_trace=error.__traceback__
+    async def ERROR(self, summary_or_log_entry: Union[str, LogEntry, Exception], message: Any = None, level: int = 60):
+        if isinstance(summary_or_log_entry, LogEntry):
+            log_entry = summary_or_log_entry
+            log_entry.basic.log_level = "ERROR"
+            log_entry.basic.log_level_number = level
+        elif isinstance(summary_or_log_entry, Exception):
+            log_entry = LogEntry(
+                basic=BasicInfo(
+                    summary=str(summary_or_log_entry),
+                    message=message,
+                    log_level="ERROR",
+                    log_level_number=level
+                ),
+                error=ErrorInfo(
+                    error_type=type(summary_or_log_entry).__name__,
+                    error_message=str(summary_or_log_entry),
+                    error_stack_trace=traceback.format_exc()
+                )
             )
-        )
-        await self.ERROR(log_entry)
-
-    async def DETAIL(self, log_entry: LogEntry, level: int = 10):
-        log_entry.basic.log_level = "DETAIL"
-        log_entry.basic.log_level_number = level
-        await self.process_log_internal(log_entry)
-
-    async def DEBUG(self, log_entry: LogEntry, level: int = 20):
-        log_entry.basic.log_level = "DEBUG"
-        log_entry.basic.log_level_number = level
-        await self.process_log_internal(log_entry)
-
-    async def INFO(self, log_entry: LogEntry, level: int = 30):
-        log_entry.basic.log_level = "INFO"
-        log_entry.basic.log_level_number = level
-        await self.process_log_internal(log_entry)
-
-    async def WARN(self, log_entry: LogEntry, level: int = 50):
-        log_entry.basic.log_level = "WARN"
-        log_entry.basic.log_level_number = level
-        await self.process_log_internal(log_entry)
-
-    async def ERROR(self, log_entry: LogEntry, level: int = 60):
-        log_entry.basic.log_level = "ERROR"
-        log_entry.basic.log_level_number = level
+        else:
+            log_entry = LogEntry(basic=BasicInfo(
+                summary=summary_or_log_entry,
+                message=message,
+                log_level="ERROR",
+                log_level_number=level
+            ))
         await self.process_log_internal(log_entry)
 
     def setup_level(self, file_level: int, console_level: int, api_level: int):

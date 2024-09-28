@@ -1,6 +1,9 @@
 import unittest
 from log78 import Log78, Environment
 from log78.log_entry import LogEntry, BasicInfo
+import pytest
+from log78 import Log78
+from unittest.mock import patch, MagicMock
 
 class TestLog78(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
@@ -39,6 +42,47 @@ class TestLog78(unittest.IsolatedAsyncioTestCase):
         self.assertNotEqual(original_logger.current_environment, cloned_logger.current_environment)
 
     # 添加更多测试...
+
+@pytest.mark.asyncio
+async def test_info_with_text_only():
+    logger = Log78.instance()
+    
+    # 打印当前环境和日志级别
+    print(f"Current environment: {logger.current_environment}")
+    file_level, console_level, api_level = logger.get_current_levels()
+    print(f"Current log levels - File: {file_level}, Console: {console_level}, API: {api_level}")
+
+    # 确保我们在开发模式下
+    logger.set_environment(Environment.Development)
+    print(f"Environment set to: {logger.current_environment}")
+    file_level, console_level, api_level = logger.get_current_levels()
+    print(f"Updated log levels - File: {file_level}, Console: {console_level}, API: {api_level}")
+
+    # 使用 MagicMock 来模拟 ConsoleLog78
+    mock_console_logger = MagicMock()
+    logger.console_logger = mock_console_logger
+
+    test_message = "This is a test info message"
+    await logger.INFO(test_message)
+
+    # 验证是否调用了 console_logger 的 write_line 方法
+    mock_console_logger.write_line.assert_called_once()
+    
+    # 获取传递给 write_line 的 LogEntry 对象
+    if mock_console_logger.write_line.call_args:
+        log_entry = mock_console_logger.write_line.call_args[0][0]
+        
+        # 验证 LogEntry 的内容
+        assert log_entry.basic.summary == test_message
+        assert log_entry.basic.log_level == "INFO"
+        assert log_entry.basic.log_level_number == 30
+
+    else:
+        pytest.fail("write_line was not called with any arguments")
+
+    # 打印调试信息
+    print(f"Console logger mock calls: {mock_console_logger.mock_calls}")
+    print(f"Write line mock calls: {mock_console_logger.write_line.mock_calls}")
 
 if __name__ == '__main__':
     unittest.main()

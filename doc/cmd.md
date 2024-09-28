@@ -5,8 +5,8 @@ pip install poetry
 poetry install
 
 ## 安装和设置
-
-poetry install
+      poetry lock  --no-update
+       poetry install
 
 
 ## 运行所有任务

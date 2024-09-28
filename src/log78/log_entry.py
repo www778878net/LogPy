@@ -1,16 +1,58 @@
 import json
 from typing import Any, Dict, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
+from dataclasses import dataclass, field
+
+@dataclass
+class BasicInfo:
+    summary: str = ""
+    message: Optional[str] = None
+    log_level: str = "INFO"
+    log_level_number: int = 30
+    timestamp: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+    service_name: Optional[str] = None
+    service_obj: Optional[str] = None
+    service_fun: Optional[str] = None
+    user_id: Optional[str] = None
+    user_name: Optional[str] = None
+
+@dataclass
+class EventInfo:
+    event_id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    event_kind: Optional[str] = None
+    event_category: Optional[str] = None
+    event_action: Optional[str] = None
+    event_outcome: Optional[str] = None
+    event_duration: Optional[float] = None
+    transaction_id: Optional[str] = None
+
+@dataclass
+class ErrorInfo:
+    error_type: Optional[str] = None
+    error_message: Optional[str] = None
+    error_stack_trace: Optional[str] = None
+
+@dataclass
+class HttpInfo:
+    http_request_method: Optional[str] = None
+    http_request_body_content: Optional[str] = None
+    http_response_status_code: Optional[int] = None
+    url_original: Optional[str] = None
+
+@dataclass
+class TraceInfo:
+    trace_id: Optional[str] = None
+    span_id: Optional[str] = None
 
 class LogEntry:
-    def __init__(self):
-        self.basic = BasicInfo()
-        self.event = EventInfo()
-        self.error = ErrorInfo()
-        self.http = HttpInfo()
-        self.trace = TraceInfo()
-        self.additional_properties = {}
+    def __init__(self, basic: BasicInfo = None, event: EventInfo = None, error: ErrorInfo = None, http: HttpInfo = None, trace: TraceInfo = None):
+        self.basic = basic if basic is not None else BasicInfo()
+        self.event = event if event is not None else EventInfo()
+        self.error = error if error is not None else ErrorInfo()
+        self.http = http if http is not None else HttpInfo()
+        self.trace = trace if trace is not None else TraceInfo()
+        self.additional_properties: Dict[str, Any] = {}
 
     def to_json(self) -> str:
         data = {}
@@ -40,47 +82,3 @@ class LogEntry:
 
     def add_property(self, key: str, value: Any):
         self.additional_properties[key] = value
-
-class BasicInfo:
-    def __init__(self):
-        self.summary = None
-        self.log_level_number = 0
-        self.timestamp = datetime.utcnow()
-        self.log_level = None
-        self.message = None
-        self.host_name = None
-        self.service_name = None
-        self.service_menu = None
-        self.service_obj = None
-        self.service_fun = None
-        self.user_id = None
-        self.user_name = None
-        self.log_index = None
-
-class EventInfo:
-    def __init__(self):
-        self.event_id = str(uuid.uuid4())
-        self.event_kind = None
-        self.event_category = None
-        self.event_action = None
-        self.event_outcome = None
-        self.event_duration = None
-        self.transaction_id = None
-
-class ErrorInfo:
-    def __init__(self):
-        self.error_type = None
-        self.error_message = None
-        self.error_stack_trace = None
-
-class HttpInfo:
-    def __init__(self):
-        self.http_request_method = None
-        self.http_request_body_content = None
-        self.http_response_status_code = None
-        self.url_original = None
-
-class TraceInfo:
-    def __init__(self):
-        self.trace_id = None
-        self.span_id = None
