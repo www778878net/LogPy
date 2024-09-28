@@ -3,11 +3,9 @@ import json
 from .log_entry import LogEntry
 
 class FileLogDetail:
-    def __init__(self, filename="detail.log", menu="logs", clear_on_create=True):
+    def __init__(self, filename="detail.log", menu="logs"):
         self.file_path = os.path.join(menu, filename)
-        os.makedirs(menu, exist_ok=True)
-        if clear_on_create:
-            self.clear()
+        os.makedirs(menu, exist_ok=True)      
 
     def log_to_file(self, log_entry: LogEntry):
         try:
