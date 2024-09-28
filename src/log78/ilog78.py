@@ -1,6 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import Optional, Union
 
+from log78.iconsole_log78 import IConsoleLog78
+from log78.ifile_log78 import IFileLog78
+from log78.iserver_log78 import IServerLog78
+from log78.log78 import Log78
+
 class ILog78(ABC):
     @abstractmethod
     async def DETAIL(self, summary: str, message: Optional[Union[str, dict]] = None, level: int = 10):

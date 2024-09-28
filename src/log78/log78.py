@@ -173,7 +173,7 @@ class Log78:
         await self.process_log_internal(log_entry)
 
     async def INFO(self, summary_or_log_entry: Union[str, LogEntry], message: Any = None, level: int = 30):
-        print("INFO method called")  # 调试输出
+        
         if isinstance(summary_or_log_entry, LogEntry):
             log_entry = summary_or_log_entry
             log_entry.basic.log_level = "INFO"
@@ -185,9 +185,9 @@ class Log78:
                 log_level="INFO",
                 log_level_number=level
             ))
-        print(f"Log entry created: {log_entry.to_json()}")  # 调试输出
+        
         await self.process_log_internal(log_entry)
-        print("process_log_internal completed")  # 调试输出
+        
 
     async def WARN(self, summary_or_log_entry: Union[str, LogEntry], message: Any = None, level: int = 50):
         if isinstance(summary_or_log_entry, LogEntry):
