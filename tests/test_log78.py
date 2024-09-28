@@ -13,9 +13,33 @@ class TestLog78(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         self.logger = Log78()  # 假设 Log78 是一个普通类，而不是单例
 
-    def test_environment_settings(self):
+    async def test_environment_settings(self):
         self.logger.set_environment(Environment.Development)
         self.assertEqual(self.logger.current_environment, Environment.Development)
+
+        # 添加日志记录测试
+        test_message = "这是一条测试信息日志"
+        await self.logger.INFO(test_message)
+
+        # 等待一小段时间，确保日志被写入
+        await asyncio.sleep(0.1)
+
+        # 检查 detail.log 文件是否存在并有内容
+        detail_log_file = os.path.join(os.getcwd(), "logs", "detail.log")
+        if os.path.exists(detail_log_file):
+            with open(detail_log_file, 'r', encoding='utf-8') as f:
+                log_content = f.read()
+                print(f"detail.log 内容: {log_content}")
+                self.assertIn("这是一条测试信息日志", log_content)
+        else:
+            self.fail("detail.log 文件不存在")
+
+        # 检查当前日志级别
+        file_level, console_level, api_level = self.logger.get_current_levels()
+        print(f"当前日志级别 - 文件: {file_level}, 控制台: {console_level}, API: {api_level}")
+        self.assertEqual(file_level, 20)  # DEBUG level for file in Development environment
+        self.assertEqual(console_level, 20)  # DEBUG level for console in Development environment
+        self.assertEqual(api_level, 30)  # INFO level for API in Development environment
 
     async def test_log_levels(self):
         log_entry = LogEntry()
