@@ -27,13 +27,28 @@ async def demo_detailed_logging():
     
     await log.INFO(log_entry)
 
+async def test_file_logging():
+    log = Log78.instance()
+    log.set_environment(Environment.Development)
+
+    await log.INFO("这是一条写入文件的中文日志测试")
+    await log.WARN("警告：包含特殊字符 !@#$%^&*()_+")
+    await log.ERROR("错误：包含 Unicode 字符 ♠♥♦♣")
+    
+    log_entry = LogEntry(basic=BasicInfo(
+        summary="复杂日志条目",
+        message="这是一个包含多种信息的日志条目",
+        service_name="测试服务",
+        user_id="user_123"
+    ))
+    await log.INFO(log_entry)
+
+    print("请检查日志文件以确认中文和特殊字符是否正确显示")
+
 async def main():
     print("Log78 演示程序")
-    print("1. 基本日志记录")
-    await demo_basic_logging()
-    
-    print("\n2. 详细日志记录")
-    await demo_detailed_logging()
+    print("文件日志测试")
+    await test_file_logging()
 
 if __name__ == "__main__":
     asyncio.run(main())

@@ -21,7 +21,8 @@ class FileLog78:
             compression="zip",  # 压缩旧日志
             format="{message}",  # 只记录消息内容
             encoding="utf-8",  # 指定编码为 UTF-8
-            serialize=True  # 序列化日志记录
+            serialize=False,  # 不序列化日志记录
+            enqueue=True  # 使用队列来写入日志，避免 I/O 阻塞
         )
 
     def log_to_file(self, log_entry: LogEntry):
