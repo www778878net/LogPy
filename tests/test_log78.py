@@ -72,5 +72,43 @@ class TestLog78(unittest.IsolatedAsyncioTestCase):
     # 添加更多测试...
 
 
+class TestLog78Singleton(unittest.IsolatedAsyncioTestCase):
+    async def test_singleton_behavior(self):
+        # 获取第一个实例并设置为开发模式
+        logger1 = Log78.instance()
+        logger1.set_environment(Environment.Development)
+        self.assertEqual(logger1.current_environment, Environment.Development)
+
+        # 获取第二个实例，应该与第一个相同
+        logger2 = Log78.instance()
+        self.assertIs(logger1, logger2)
+        self.assertEqual(logger2.current_environment, Environment.Development)
+
+        # 模拟在另一个类中获取单例
+        class AnotherClass:
+            def __init__(self):
+                self.logger = Log78.instance()
+
+            def get_environment(self):
+                return self.logger.current_environment
+
+        another = AnotherClass()
+        self.assertEqual(another.get_environment(), Environment.Development)
+
+    async def test_clone_behavior(self):
+        original = Log78.instance()
+        original.set_environment(Environment.Development)
+
+        cloned = original.clone()
+        self.assertIsNot(original, cloned)
+        self.assertEqual(cloned.current_environment, Environment.Development)
+
+        # 改变原始实例的环境，克隆的实例不应受影响
+        original.set_environment(Environment.Production)
+        self.assertEqual(original.current_environment, Environment.Production)
+        self.assertEqual(cloned.current_environment, Environment.Development)
+
+# ... 保留其他测试类和方法 ...
+
 if __name__ == '__main__':
     pytest.main([__file__, '-s', '-v'])
