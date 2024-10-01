@@ -6,7 +6,7 @@ from datetime import datetime
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
 
-from log78.log_entry import LogEntry, BasicInfo, EventInfo, ErrorInfo, HttpInfo, TraceInfo
+from www778878net.log_entry import LogEntry, BasicInfo, EventInfo, ErrorInfo, HttpInfo, TraceInfo
 
 class CustomLogEntry(LogEntry):
     def __init__(self):

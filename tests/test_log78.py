@@ -1,8 +1,8 @@
 import unittest
-from log78 import Log78, Environment, FileLog78
-from log78.log_entry import LogEntry, BasicInfo
+from www778878net import Log78, Environment, FileLog78
+from www778878net.log_entry import LogEntry, BasicInfo
 import pytest
-from log78 import Log78
+from www778878net import Log78
 from unittest.mock import patch, MagicMock
 import sys
 import os

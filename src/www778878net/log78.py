@@ -3,14 +3,16 @@ import os
 from enum import Enum
 from typing import Optional, Dict, Any, Tuple, Union
 from datetime import datetime
-from .log_entry import LogEntry, BasicInfo, ErrorInfo
-from .iserver_log78 import IServerLog78
-from .iconsole_log78 import IConsoleLog78
-from .ifile_log78 import IFileLog78
-from .console_log78 import ConsoleLog78
-from .file_log78 import FileLog78
-from .file_log_detail import FileLogDetail
+from www778878net.log_entry import LogEntry, BasicInfo, ErrorInfo
+from www778878net.iserver_log78 import IServerLog78
+from www778878net.iconsole_log78 import IConsoleLog78
+from www778878net.ifile_log78 import IFileLog78
+from www778878net.console_log78 import ConsoleLog78
+from www778878net.file_log78 import FileLog78
+from www778878net.file_log_detail import FileLogDetail
 import traceback
+
+from www778878net.logstash_server_log78 import LogstashServerLog78
 
 class Environment(Enum):
     Production = 0
@@ -271,12 +273,17 @@ if __name__ == "__main__":
 
     async def test_log78():
         logger = Log78.instance()
+        logger.setup(
+          LogstashServerLog78(f"http://192.168.31.132:5000"),
+          FileLog78(),
+          ConsoleLog78()
+      )
         logger.setup_level(file_level=10, console_level=10, api_level=10)  # 设置所有级别为最低，确保所有日志都会输出
 
         # 测试不同级别的日志
-        await logger.DETAIL("这是一条 DETAIL 日志")
-        await logger.DEBUG("这是一条 DEBUG 日志")
         await logger.INFO("这是一条 INFO 日志")
+        await logger.DETAIL("这是一条 DETAIL 日志")
+        await logger.DEBUG("这是一条 DEBUG 日志")        
         await logger.WARN("这是一条 WARN 日志")
         await logger.ERROR("这是一条 ERROR 日志")
 

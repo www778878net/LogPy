@@ -1,5 +1,5 @@
 import asyncio
-from log78 import Log78, LogEntry, BasicInfo, Environment
+from www778878net import Log78, LogEntry, BasicInfo, Environment
 import sys
 import io
 

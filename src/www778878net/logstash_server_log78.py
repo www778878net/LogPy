@@ -1,14 +1,19 @@
 import asyncio
 import aiohttp
-from datetime import datetime
 from typing import Optional
-from .log_entry import LogEntry, BasicInfo
-from .log78 import Log78
+from www778878net.log_entry import LogEntry, BasicInfo
 
 class LogstashServerLog78:
     def __init__(self, server_url: str):
         self.server_url = server_url
-        self._logger = Log78.instance()
+        self._logger = None
+
+    @property
+    def logger(self):
+        if self._logger is None:
+            from www778878net.log78 import Log78
+            self._logger = Log78.instance()
+        return self._logger
 
     async def log_to_server(self, log_json: str):
         try:
@@ -20,7 +25,7 @@ class LogstashServerLog78:
                 log_level="ERROR",
                 log_level_number=60
             ))
-            await self._logger.ERROR(error_log_entry)
+            await self.logger.ERROR(error_log_entry)
 
     async def _log_to_server_internal(self, log_json: str):
         async with aiohttp.ClientSession() as session:
@@ -33,7 +38,7 @@ class LogstashServerLog78:
                             log_level="DEBUG",
                             log_level_number=20
                         ))
-                        await self._logger.DEBUG(success_log_entry)
+                        await self.logger.DEBUG(success_log_entry)
                     else:
                         error_message = f"Logstash server returned status code {response.status}"
                         error_log_entry = LogEntry(basic=BasicInfo(
@@ -42,7 +47,7 @@ class LogstashServerLog78:
                             log_level="ERROR",
                             log_level_number=60
                         ))
-                        await self._logger.ERROR(error_log_entry)
+                        await self.logger.ERROR(error_log_entry)
                     return response
             except asyncio.TimeoutError:
                 timeout_log_entry = LogEntry(basic=BasicInfo(
@@ -51,7 +56,7 @@ class LogstashServerLog78:
                     log_level="ERROR",
                     log_level_number=60
                 ))
-                await self._logger.ERROR(timeout_log_entry)
+                await self.logger.ERROR(timeout_log_entry)
             except Exception as ex:
                 error_message = f"Exception occurred while sending log to Logstash: {str(ex)}"
                 exception_log_entry = LogEntry(basic=BasicInfo(
@@ -60,7 +65,7 @@ class LogstashServerLog78:
                     log_level="ERROR",
                     log_level_number=60
                 ))
-                await self._logger.ERROR(exception_log_entry)
+                await self.logger.ERROR(exception_log_entry)
                 raise
 
     async def __aenter__(self):
