@@ -264,3 +264,30 @@ class Log78:
     async def add_debug_key(self, key: str):
         async with self._lock:
             self.debug_kind.add(key.lower())
+
+# 在文件末尾添加以下测试代码
+if __name__ == "__main__":
+    import asyncio
+
+    async def test_log78():
+        logger = Log78.instance()
+        logger.setup_level(file_level=10, console_level=10, api_level=10)  # 设置所有级别为最低，确保所有日志都会输出
+
+        # 测试不同级别的日志
+        await logger.DETAIL("这是一条 DETAIL 日志")
+        await logger.DEBUG("这是一条 DEBUG 日志")
+        await logger.INFO("这是一条 INFO 日志")
+        await logger.WARN("这是一条 WARN 日志")
+        await logger.ERROR("这是一条 ERROR 日志")
+
+        # 测试使用 LogEntry 对象
+        log_entry = LogEntry(basic=BasicInfo(
+            summary="测试 LogEntry",
+            message="这是使用 LogEntry 对象的日志",
+            log_level="INFO",
+            log_level_number=30
+        ))
+        await logger.INFO(log_entry)
+
+    # 运行测试函数
+    asyncio.run(test_log78())
