@@ -31,7 +31,7 @@ Log78 提供了两种记录日志的方式:一种是简单的方法用于快速�
 from log78 import Log78
 
 # 获取 Log78 实例 - 无需设置!
-log = Log78.instance()
+log = Logger78.instance()
 
 # 记录一条简单的消息
 await log.INFO("你好, Log78!")
@@ -56,7 +56,7 @@ await log.INFO(log_entry)
 如果您需要自定义日志行为,可以使用 `setup` 方法:
 
 ```python
-from log78 import Log78, ServerLog78, FileLog78, ConsoleLog78
+from log78 import Logger78. ServerLog78, FileLog78, ConsoleLog78
 
 # 创建自定义日志记录器实例(如果需要)
 server_logger = ServerLog78()
@@ -64,7 +64,7 @@ file_logger = FileLog78("custom_logfile")
 console_logger = ConsoleLog78()
 
 # 设置自定义日志记录器
-log = Log78.instance()
+log = Logger78.instance()
 log.setup(server_logger, file_logger, console_logger)
 ```
 
@@ -84,9 +84,9 @@ log.setup(server_logger, file_logger, console_logger)
 ## 示例: 调整日志级别
 
 ```python
-from log78 import Log78, LogEntry, BasicInfo
+from log78 import Logger78. LogEntry, BasicInfo
 
-log = Log78.instance()
+log = Logger78.instance()
 
 # 将控制台日志级别调整为0以打印所有日志(用于调试)
 log.level_console = 0
@@ -117,7 +117,7 @@ await log.ERROR(log_entry)  # 会记录到控制台、文件和API
 `LogEntry` 类提供了结构化信息用于详细日志记录:
 
 ```python
-from log78 import Log78, LogEntry, BasicInfo, EventInfo, HttpInfo
+from log78 import Logger78. LogEntry, BasicInfo, EventInfo, HttpInfo
 
 log_entry = LogEntry()
 log_entry.basic = BasicInfo(

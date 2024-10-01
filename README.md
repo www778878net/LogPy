@@ -18,7 +18,7 @@ Log78 provides two ways to log messages: a simple method for quick logging and a
 from log78 import Log78
 
 # Get the Log78 instance - no setup required!
-log = Log78.instance()
+log = Logger78.instance()
 
 # Log a simple message
 await log.INFO("Hello, Log78!")
@@ -43,7 +43,7 @@ Both methods are ready to use out of the box with default console and file loggi
 If you need custom logging behavior, you can use the `setup` method:
 
 ```python
-from log78 import Log78, ServerLog78, FileLog78, ConsoleLog78
+from log78 import Logger78. ServerLog78, FileLog78, ConsoleLog78
 
 # Create custom logger instances if needed
 server_logger = ServerLog78()
@@ -51,7 +51,7 @@ file_logger = FileLog78("custom_logfile")
 console_logger = ConsoleLog78()
 
 # Setup custom loggers
-log = Log78.instance()
+log = Logger78.instance()
 log.setup(server_logger, file_logger, console_logger)
 ```
 
@@ -71,9 +71,9 @@ log.setup(server_logger, file_logger, console_logger)
 ## Example: Adjusting Log Levels
 
 ```python
-from log78 import Log78, LogEntry, BasicInfo
+from log78 import Logger78. LogEntry, BasicInfo
 
-log = Log78.instance()
+log = Logger78.instance()
 
 # Adjust console log level to 0 to print all logs (for debugging)
 log.level_console = 0
@@ -104,7 +104,7 @@ await log.ERROR(log_entry)  # Will be recorded in console, file, and API
 The `LogEntry` class provides structured information for detailed logging:
 
 ```python
-from log78 import Log78, LogEntry, BasicInfo, EventInfo, HttpInfo
+from log78 import Logger78. LogEntry, BasicInfo, EventInfo, HttpInfo
 
 log_entry = LogEntry()
 log_entry.basic = BasicInfo(
