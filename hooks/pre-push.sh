@@ -25,12 +25,12 @@ echo "操作人: $operator"
 cd "$work_dir"
 
 # 激活虚拟环境
-source .venv/Scripts/activate
+#source .venv/Scripts/activate
 
 if [ "$current_branch" = "main" ]; then
     echo "当前分支是 main。运行... (执行 ID: $EXECUTION_ID)"
     echo "运行测试... (执行 ID: $EXECUTION_ID)"
-    pytest
+    poetry run pytest
     if [ $? -ne 0 ]; then
         echo "测试失败，推送已中止 (执行 ID: $EXECUTION_ID)"
         exit 1
