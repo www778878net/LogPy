@@ -1,6 +1,5 @@
 import os
 from loguru import logger
-from .log_entry import LogEntry
 
 class FileLog78:
     def __init__(self, filename="7788_{time:YYYY-MM-DD_HH}.log", menu="logs"):
@@ -25,8 +24,8 @@ class FileLog78:
             enqueue=True  # 使用队列来写入日志，避免 I/O 阻塞
         )
 
-    def log_to_file(self, log_entry: LogEntry):
-        logger.info(log_entry.to_json())
+    def log_to_file(self, log_json: str):
+        logger.info(log_json)
 
     def clear(self):
         # 使用 loguru 时，这个方法可能不需要实现

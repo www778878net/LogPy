@@ -101,25 +101,35 @@ class Log78:
                 for key, value in self.custom_properties.items():
                     log_entry.add_property(key, value)
 
-            if self.debug_file_logger:
-                self.debug_file_logger.log_to_file(log_entry)
-
             is_debug = self.is_debug_key(log_entry)
+            log_json = None
+
+            # 如果存在 debug 文件记录器或满足输出条件，才转换为 JSON
+            if self.debug_file_logger or is_debug or log_entry.basic.log_level_number >= min(self.level_api, self.level_file, self.level_console):
+                log_json = log_entry.to_json()
+
+            # Debug 文件总是记录日志
+            if self.debug_file_logger:
+                self.debug_file_logger.log_to_file(log_json)
+
+            # 如果不满足任何输出条件，直接返回
+            if not is_debug and log_entry.basic.log_level_number < min(self.level_api, self.level_file, self.level_console):
+                return
 
             if is_debug or log_entry.basic.log_level_number >= self.level_api:
                 if self.server_logger:
                     try:
-                        await self.server_logger.log_to_server(log_entry)
+                        await self.server_logger.log_to_server(log_json)
                     except Exception as ex:
                         print(f"Error in server logging: {ex}")
 
             if is_debug or log_entry.basic.log_level_number >= self.level_file:
                 if self.file_logger:
-                    self.file_logger.log_to_file(log_entry)
+                    self.file_logger.log_to_file(log_json)
 
             if is_debug or log_entry.basic.log_level_number >= self.level_console:
                 if self.console_logger:
-                    self.console_logger.write_line(log_entry)  # 确保这行代码存在并且没有被注释掉
+                    self.console_logger.write_line(log_json)
 
     def is_debug_key(self, log_entry: LogEntry) -> bool:
         if self.debug_entry and self.debug_entry.basic:

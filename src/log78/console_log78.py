@@ -1,20 +1,11 @@
-import logging
-import sys
 from .log_entry import LogEntry
 
 class ConsoleLog78:
     def __init__(self):
-        self._logger = logging.getLogger(__name__)
-        self._logger.setLevel(logging.INFO)
-        handler = logging.StreamHandler(sys.stdout)  # 使用 sys.stdout
-        formatter = logging.Formatter('%(message)s')
-        handler.setFormatter(formatter)
-        self._logger.addHandler(handler)
+        pass  # 不需要初始化 logging
 
-    def write_line(self, log_entry: LogEntry):
-        self._logger.info(log_entry.to_json())
+    def write_line(self, log_json: str):
+        print(log_json)  # 直接打印 JSON 字符串
 
     def __del__(self):
-        for handler in self._logger.handlers[:]:
-            self._logger.removeHandler(handler)
-            handler.close()
+        pass  # 不需要清理 logging handlers

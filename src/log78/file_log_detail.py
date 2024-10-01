@@ -1,22 +1,20 @@
 import os
-import json
-from .log_entry import LogEntry
 
 class FileLogDetail:
     def __init__(self, filename="detail.log", menu="logs"):
         self.file_path = os.path.join(menu, filename)
         os.makedirs(menu, exist_ok=True)      
 
-    def log_to_file(self, log_entry: LogEntry):
+    def log_to_file(self, log_json: str):
         try:
-            log_string = f"<AI_FOCUS_LOG>{log_entry.to_json()}</AI_FOCUS_LOG>\n"
-            with open(self.file_path, 'a', encoding='utf-8') as f:  # 添加 encoding='utf-8'
+            log_string = f"<AI_FOCUS_LOG>{log_json}</AI_FOCUS_LOG>\n"
+            with open(self.file_path, 'a', encoding='utf-8') as f:
                 f.write(log_string)
         except Exception as ex:
             print(f"写入详细日志文件时出错: {ex}")
 
     def clear(self):
-        with open(self.file_path, 'w', encoding='utf-8') as f:  # 添加 encoding='utf-8'
+        with open(self.file_path, 'w', encoding='utf-8') as f:
             f.write('')
 
     def close(self):

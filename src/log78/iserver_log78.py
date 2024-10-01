@@ -13,5 +13,5 @@ class IServerLog78(ABC):
         pass
 
     @abstractmethod
-    async def log_to_server(self, log_entry: dict) -> Optional[dict]:
+    async def log_to_server(self, log_json: str) -> Optional[dict]:
         pass

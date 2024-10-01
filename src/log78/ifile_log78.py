@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 class IFileLog78(ABC):
     @abstractmethod
-    def log_to_file(self, log_entry: dict):
+    def log_to_file(self, log_json: str):
         pass
 
     @abstractmethod
