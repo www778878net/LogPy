@@ -1,4 +1,4 @@
-from .log78 import Log78, Environment
+from .logger78 import Logger78, Environment
 from .log_entry import LogEntry, BasicInfo, ErrorInfo, EventInfo, HttpInfo, TraceInfo
 from .console_log78 import ConsoleLog78
 from .file_log78 import FileLog78
@@ -10,7 +10,7 @@ from .ilog78 import ILog78
 from .logstash_server_log78 import LogstashServerLog78
 
 __all__ = [
-    'Log78',
+    'Logger78',
     'Environment',
     'LogEntry',
     'BasicInfo',

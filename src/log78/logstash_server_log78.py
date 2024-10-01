@@ -1,7 +1,7 @@
 import asyncio
 import aiohttp
 from typing import Optional
-from www778878net.log_entry import LogEntry, BasicInfo
+from log78.log_entry import LogEntry, BasicInfo
 
 class LogstashServerLog78:
     def __init__(self, server_url: str):
@@ -11,8 +11,8 @@ class LogstashServerLog78:
     @property
     def logger(self):
         if self._logger is None:
-            from www778878net.log78 import Log78
-            self._logger = Log78.instance()
+            from log78.logger78 import Logger78
+            self._logger = Logger78.instance()
         return self._logger
 
     async def log_to_server(self, log_json: str):

@@ -1,8 +1,8 @@
 import unittest
-from www778878net import Log78, Environment, FileLog78
-from www778878net.log_entry import LogEntry, BasicInfo
+from log78 import Logger78, Environment, FileLog78
+from log78.log_entry import LogEntry, BasicInfo
 import pytest
-from www778878net import Log78
+from log78 import Logger78
 from unittest.mock import patch, MagicMock
 import sys
 import os
@@ -11,7 +11,7 @@ import asyncio
 
 class TestLog78(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
-        self.logger = Log78()  # 假设 Log78 是一个普通类，而不是单例
+        self.logger = Logger78()  # 假设 Log78 是一个普通类，而不是单例
 
     async def test_environment_settings(self):
         self.logger.set_environment(Environment.Development)
@@ -58,7 +58,7 @@ class TestLog78(unittest.IsolatedAsyncioTestCase):
         # 这里需要添加断言来验证自定义日志是否正确记录
 
     def test_clone(self):
-        original_logger = Log78()
+        original_logger = Logger78()
         original_logger.set_environment(Environment.Development)
 
         cloned_logger = original_logger.clone()
@@ -75,19 +75,19 @@ class TestLog78(unittest.IsolatedAsyncioTestCase):
 class TestLog78Singleton(unittest.IsolatedAsyncioTestCase):
     async def test_singleton_behavior(self):
         # 获取第一个实例并设置为开发模式
-        logger1 = Log78.instance()
+        logger1 = Logger78.instance()
         logger1.set_environment(Environment.Development)
         self.assertEqual(logger1.current_environment, Environment.Development)
 
         # 获取第二个实例，应该与第一个相同
-        logger2 = Log78.instance()
+        logger2 = Logger78.instance()
         self.assertIs(logger1, logger2)
         self.assertEqual(logger2.current_environment, Environment.Development)
 
         # 模拟在另一个类中获取单例
         class AnotherClass:
             def __init__(self):
-                self.logger = Log78.instance()
+                self.logger = Logger78.instance()
 
             def get_environment(self):
                 return self.logger.current_environment
@@ -96,7 +96,7 @@ class TestLog78Singleton(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(another.get_environment(), Environment.Development)
 
     async def test_clone_behavior(self):
-        original = Log78.instance()
+        original = Logger78.instance()
         original.set_environment(Environment.Development)
 
         cloned = original.clone()

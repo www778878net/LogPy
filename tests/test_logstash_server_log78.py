@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from www778878net.logstash_server_log78 import LogstashServerLog78
-from www778878net.log_entry import LogEntry, BasicInfo
+from log78.logstash_server_log78 import LogstashServerLog78
+from log78.log_entry import LogEntry, BasicInfo
 
 class TestLogstashServerLog78(unittest.IsolatedAsyncioTestCase):
     async def test_log_to_server(self):

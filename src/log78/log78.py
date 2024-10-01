@@ -3,23 +3,23 @@ import os
 from enum import Enum
 from typing import Optional, Dict, Any, Tuple, Union
 from datetime import datetime
-from www778878net.log_entry import LogEntry, BasicInfo, ErrorInfo
-from www778878net.iserver_log78 import IServerLog78
-from www778878net.iconsole_log78 import IConsoleLog78
-from www778878net.ifile_log78 import IFileLog78
-from www778878net.console_log78 import ConsoleLog78
-from www778878net.file_log78 import FileLog78
-from www778878net.file_log_detail import FileLogDetail
+from log78.log_entry import LogEntry, BasicInfo, ErrorInfo
+from log78.iserver_log78 import IServerLog78
+from log78.iconsole_log78 import IConsoleLog78
+from log78.ifile_log78 import IFileLog78
+from log78.console_log78 import ConsoleLog78
+from log78.file_log78 import FileLog78
+from log78.file_log_detail import FileLogDetail
 import traceback
 
-from www778878net.logstash_server_log78 import LogstashServerLog78
+from log78.logstash_server_log78 import LogstashServerLog78
 
 class Environment(Enum):
     Production = 0
     Development = 1
     Testing = 2
 
-class Log78:
+class Logger78:
     def __init__(self):
         self.debug_kind = set()
         self.level_file = 30
@@ -37,9 +37,9 @@ class Log78:
         self.set_environment_from_env_var()
 
     @classmethod
-    def instance(cls) -> 'Log78':
+    def instance(cls) -> 'Logger78':
         if not hasattr(cls, "_instance"):
-            cls._instance = Log78()
+            cls._instance = Logger78()
             cls._instance.setup(None, FileLog78(), ConsoleLog78())
         return cls._instance
 
@@ -251,8 +251,8 @@ class Log78:
     def get_current_levels(self) -> Tuple[int, int, int]:
         return (self.level_file, self.level_console, self.level_api)
 
-    def clone(self) -> 'Log78':
-        cloned = Log78()
+    def clone(self) -> 'Logger78':
+        cloned = Logger78()
         cloned.server_logger = self.server_logger
         cloned.file_logger = self.file_logger
         cloned.console_logger = self.console_logger
@@ -272,7 +272,7 @@ if __name__ == "__main__":
     import asyncio
 
     async def test_log78():
-        logger = Log78.instance()
+        logger = Logger78.instance()
         logger.setup(
           LogstashServerLog78(f"http://192.168.31.132:5000"),
           FileLog78(),

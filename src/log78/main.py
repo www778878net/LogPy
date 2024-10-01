@@ -1,5 +1,5 @@
 import asyncio
-from www778878net import Log78, LogEntry, BasicInfo, Environment
+from log78 import Logger78, LogEntry, BasicInfo, Environment
 import sys
 import io
 
@@ -7,7 +7,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
 async def demo_basic_logging():
-    log = Log78.instance()
+    log = Logger78.instance()
     log.set_environment(Environment.Development)
 
     await log.INFO("这是一条基本的信息日志")
@@ -15,7 +15,7 @@ async def demo_basic_logging():
     await log.ERROR("这是一条错误日志", "错误摘要", 70)
 
 async def demo_detailed_logging():
-    log = Log78.instance()
+    log = Logger78.instance()
     
     log_entry = LogEntry()
     log_entry.basic = BasicInfo(
@@ -28,7 +28,7 @@ async def demo_detailed_logging():
     await log.INFO(log_entry)
 
 async def test_file_logging():
-    log = Log78.instance()
+    log = Logger78.instance()
     log.set_environment(Environment.Development)
 
     await log.INFO("这是一条写入文件的中文日志测试")
