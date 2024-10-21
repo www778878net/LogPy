@@ -60,17 +60,17 @@ class Logger78:
 
     def update_log_levels(self):
         if self.current_environment == Environment.Production:
-            self.level_console = 60  # ERROR
+            self.level_console = 30  # INFO
             self.level_file = 30     # INFO
-            self.level_api = 30      # INFO
+            self.level_api = 50      # WARN
         elif self.current_environment == Environment.Development:
             self.level_console = 20  # DEBUG
             self.level_file = 20     # DEBUG
             self.level_api = 30      # INFO
         elif self.current_environment == Environment.Testing:
-            self.level_console = 60  # ERROR
-            self.level_file = 20     # DEBUG
-            self.level_api = 30      # INFO
+            self.level_console = 30  # INFO
+            self.level_file = 30     # INFO
+            self.level_api = 50      # INFO
 
     def setup_debug_file_logger(self):
         if self.current_environment == Environment.Development:
