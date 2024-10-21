@@ -57,6 +57,8 @@ class LogEntry:
     def to_json(self) -> str:
         data = {}
         self._add_properties_to_dict(data, self)
+        data = {key.replace('_', ''): value for key, value in data.items()}
+    
         if 'additional_properties' in data and not data['additional_properties']:
             del data['additional_properties']
         return json.dumps(data, ensure_ascii=False, default=str)  # 添加 default=str
