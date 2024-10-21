@@ -25,7 +25,7 @@ tasks:
       - poetry run twine upload --repository pypi dist/*
       - git add .
       - git commit -m "Bump version to $(poetry version -s)"
-      - powershell -Command "git tag v$(poetry version -s -replace '\r|\n', '')"
+      - git tag v$(poetry version -s)
       - git push origin --tags
     desc: "Publish the project and create a Git tag"
 
