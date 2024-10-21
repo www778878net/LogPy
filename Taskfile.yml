@@ -25,7 +25,7 @@ tasks:
       - poetry run twine upload --repository pypi dist/*
       - git add .
       - git commit -m "Bump version to $(poetry version -s)"
-      - git tag v$(poetry version -s)
+      - poetry run python -c "import os; version = os.popen('poetry version -s').read().strip(); os.system(f'git tag v{version}')"
       - git push origin --tags
     desc: "Publish the project and create a Git tag"
 
