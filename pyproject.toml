@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "log78"
-version = "2.0.5"
+version = "2.0.8"
 description = "A flexible Python logging library supporting console, file, and server logging."
 authors = ["Frieda.Hu <www778878net@189.cn>"]
 license = "Apache-2.0"
@@ -39,6 +39,10 @@ test = "pytest:main"
 all = "tasks:run_all"
 setup = "tasks:setup"
 publish = "tasks:publish"
+
+[tool.poetry.group.dev.dependencies]
+build = "^1.2.2.post1"
+twine = "^5.1.1"
 
 [tool.pytest.ini_options]
 addopts = "-v"
