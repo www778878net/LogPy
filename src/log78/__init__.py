@@ -8,6 +8,7 @@ from .iconsole_log78 import IConsoleLog78
 from .ifile_log78 import IFileLog78
 from .ilog78 import ILog78
 from .logstash_server_log78 import LogstashServerLog78
+from .kafka_server_log78 import KafkaServerLog78
 
 __all__ = [
     'Logger78',
@@ -25,5 +26,6 @@ __all__ = [
     'IConsoleLog78',
     'IFileLog78',
     'ILog78',
-    'LogstashServerLog78'
+    'LogstashServerLog78',
+    'KafkaServerLog78'
 ]
