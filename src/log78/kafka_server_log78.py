@@ -10,10 +10,10 @@ class KafkaServerLog78(IServerLog78):
         self.bootstrap_servers = bootstrap_servers
         self.topic = topic
         self._producer = None
+        self._producer_started = False  # 标志生产者是否已启动
         self._error_count = 0
         self._last_attempt_time = 0
         self._retry_interval = 300  # 5分钟 = 300秒
-        asyncio.run(self.start_producer())  # 初始化时启动生产者
 
     @property
     def producer(self):
@@ -22,10 +22,10 @@ class KafkaServerLog78(IServerLog78):
         return self._producer
 
     async def start_producer(self):
-        if self._producer is None:
-            self._producer = AIOKafkaProducer(bootstrap_servers=self.bootstrap_servers)
-        await self._producer.start()
-        print("Kafka producer started")
+        if not self._producer_started:
+            await self.producer.start()
+            self._producer_started = True
+            print("Kafka producer started")
 
     async def log_to_server(self, log_json: str):
         current_time = time.time()
@@ -37,6 +37,8 @@ class KafkaServerLog78(IServerLog78):
             self._error_count = 0  # 重置错误计数
 
         try:
+            if not self._producer_started:
+                await self.start_producer()
             await self.producer.send_and_wait(self.topic, log_json.encode('utf-8'))
             self._error_count = 0  # 成功发送后重置错误计数
             print("Log sent to Kafka successfully")
