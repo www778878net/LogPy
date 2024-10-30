@@ -59,8 +59,8 @@ class LogEntry:
         self._add_properties_to_dict(data, self)
         data = {key.replace('_', ''): value for key, value in data.items()}
     
-        if 'additional_properties' in data and not data['additional_properties']:
-            del data['additional_properties']
+        if 'additionalproperties' in data and not data['additionalproperties']:
+            del data['additionalproperties']
         return json.dumps(data, ensure_ascii=False, default=str)  # 添加 default=str
 
     def _add_properties_to_dict(self, data: Dict[str, Any], obj: Any):
@@ -83,3 +83,5 @@ class LogEntry:
 
     def add_property(self, key: str, value: Any):
         self.additional_properties[key] = value
+
+ 

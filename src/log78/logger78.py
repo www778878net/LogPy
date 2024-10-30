@@ -70,7 +70,7 @@ class Logger78:
         elif self.current_environment == Environment.Testing:
             self.level_console = 30  # INFO
             self.level_file = 30     # INFO
-            self.level_api = 50      # INFO
+            self.level_api = 50      # WARN
 
     def setup_debug_file_logger(self):
         if self.current_environment == Environment.Development:
