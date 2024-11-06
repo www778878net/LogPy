@@ -41,7 +41,7 @@ class KafkaServerLog78(IServerLog78):
                 await self.start_producer()
             await self.producer.send_and_wait(self.topic, log_json.encode('utf-8'))
             self._error_count = 0  # 成功发送后重置错误计数
-            print("Log sent to Kafka successfully")
+            #print("Log sent to Kafka successfully")
         except Exception as e:
             self._error_count += 1
             self._last_attempt_time = current_time
