@@ -44,14 +44,23 @@ class Logger78:
         return cls._instance
 
     def set_environment_from_env_var(self):
-        env_var = os.environ.get("LOG78_ENVIRONMENT")
-        if env_var:
-            try:
-                self.set_environment(Environment[env_var])
-            except KeyError:
-                self.set_environment(Environment.Production)
-        else:
+        env = os.getenv('APP_ENV', 'production').lower()
+        if env == 'production':
             self.set_environment(Environment.Production)
+        elif env == 'development':
+            self.set_environment(Environment.Development)
+        elif env == 'testing':
+            self.set_environment(Environment.Testing)
+        else:
+            self.set_environment(Environment.Production)  # 默认设置为生产环境
+        # env_var = os.environ.get("LOG78_ENVIRONMENT")
+        # if env_var:
+        #     try:
+        #         self.set_environment(Environment[env_var])
+        #     except KeyError:
+        #         self.set_environment(Environment.Production)
+        # else:
+        #     self.set_environment(Environment.Production)
 
     def set_environment(self, env: Environment):
         self.current_environment = env
