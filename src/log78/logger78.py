@@ -53,14 +53,7 @@ class Logger78:
             self.set_environment(Environment.Testing)
         else:
             self.set_environment(Environment.Production)  # 默认设置为生产环境
-        # env_var = os.environ.get("LOG78_ENVIRONMENT")
-        # if env_var:
-        #     try:
-        #         self.set_environment(Environment[env_var])
-        #     except KeyError:
-        #         self.set_environment(Environment.Production)
-        # else:
-        #     self.set_environment(Environment.Production)
+
 
     def set_environment(self, env: Environment):
         self.current_environment = env
@@ -141,6 +134,7 @@ class Logger78:
             if is_debug or log_entry.basic.log_level_number >= self.level_console:
                 if self.console_logger:
                     self.console_logger.write_line(log_json)
+        return
 
     def is_debug_key(self, log_entry: LogEntry) -> bool:
         if self.debug_entry and self.debug_entry.basic:

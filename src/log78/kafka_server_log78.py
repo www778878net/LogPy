@@ -1,7 +1,7 @@
 import asyncio
 from aiokafka import AIOKafkaProducer
 import time
-from typing import Any, Dict
+from typing import Any, Dict, List
 from log78.log_entry import LogEntry, BasicInfo
 from log78.iserver_log78 import IServerLog78
 
@@ -20,6 +20,29 @@ class KafkaServerLog78(IServerLog78):
         if self._producer is None:
             self._producer = AIOKafkaProducer(bootstrap_servers=self.bootstrap_servers)
         return self._producer
+    
+    async def log_batch_to_server(self, log_json_list: List[str]):
+        """没有用要从logger78中改过来"""
+        current_time = time.time()
+        if self._error_count >= 2 and (current_time - self._last_attempt_time) < self._retry_interval:
+            print("Skipping log due to retry interval")
+            return  # 暂时不发送日志
+
+        if (current_time - self._last_attempt_time) >= self._retry_interval:
+            self._error_count = 0  # 重置错误计数
+
+        try:
+            if not self._producer_started:
+                await self.start_producer()
+            await self.producer.send_batch(
+                [(self.topic, log_json.encode('utf-8')) for log_json in log_json_list]
+            )
+            self._error_count = 0  # 成功发送后重置错误计数
+            #print("Batch logs sent to Kafka successfully")
+        except Exception as e:
+            self._error_count += 1
+            self._last_attempt_time = current_time
+            print(f"Error sending batch logs to Kafka: {e}")
 
     async def start_producer(self):
         if not self._producer_started:
